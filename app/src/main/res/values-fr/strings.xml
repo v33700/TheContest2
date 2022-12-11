@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">La compétition</string>
+    <string name="steal">Voler</string>
+    <string name="score">Compter</string>
+    <string name="reset">Réinitialiser</string>
+</resources>
