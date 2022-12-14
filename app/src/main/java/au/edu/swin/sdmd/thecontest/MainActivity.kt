@@ -3,6 +3,7 @@ package au.edu.swin.sdmd.thecontest
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 
@@ -18,16 +19,18 @@ class MainActivity : AppCompatActivity() {
         val reset = findViewById<Button>(R.id.reset_btn)
         val result = findViewById<TextView>(R.id.clicks)
 
-        val sharedPreference = getSharedPreferences("pref", MODE_PRIVATE)
+        val sharePref = getSharedPreferences("pref", MODE_PRIVATE)
 
-        count = sharedPreference.getInt("num", 0)
+        count = sharePref.getInt("int", 0)
 
-        result.setText(Integer.toString(count))
+        Log.i("TAG", "" + count)
+
+        result.setText(String.format("%d",count))
 
 
         if (count > 14) {
 
-            sharedPreference.edit().putInt("num", count).apply()
+            sharePref.edit().putInt("int", count).apply()
             count = 0
         }
 
@@ -37,29 +40,44 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkBounds()
-        var mediaPlayer = MediaPlayer.create(this, R.raw.beep_short) //audio
+
+        val mediaPlayer = MediaPlayer.create(this, R.raw.beep_short)
 
         score.setOnClickListener {
             count++
-            result.text = count.toString()
-            sharedPreference.edit().putInt("num", count).apply()
+            result.text = String.format("%d",count)
+            sharePref.edit().putInt("int", count).apply()
+            checkBounds()
             mediaPlayer.start()
+            Log.i("SCORE", "" + count)
         }
 
         steal.setOnClickListener {
             count--
-            result.text = count.toString()
-            sharedPreference.edit().putInt("num", count).apply()
+            result.text = String.format("%d",count)
+            sharePref.edit().putInt("int", count).apply()
+            checkBounds()
             mediaPlayer.start()
+            Log.i("STEAL", "" + count)
         }
 
         reset.setOnClickListener {
             count = 0
-
-            result.text = count.toString()
-            sharedPreference.edit().putInt("num", count).apply()
+            result.text = String.format("%d",count)
+            sharePref.edit().putInt("int", count).apply()
+            checkBounds()
             mediaPlayer.start()
         }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putInt("CountINT", count)
+        super.onSaveInstanceState(savedInstanceState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        count = savedInstanceState.getInt("CountINT")
     }
 
 }
